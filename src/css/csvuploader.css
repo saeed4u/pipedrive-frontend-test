@@ -1,0 +1,58 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: inherit;
+}
+
+.header-button{
+    display: flex;
+    align-items: stretch;
+}
+
+.float-right{
+    float: right;
+}
+
+.card{
+    width: 100% !important;
+}
+
+.upload-box{
+    min-height: 100px;
+    max-width: 50%;
+    margin: auto;
+    border: grey dashed 1px;
+    cursor: pointer;
+}
+
+.hidden{
+    display: none;
+}
+
+.MuiButtonBase-root{
+    margin: auto !important;
+}
+
+.center{
+    width: 40%;
+    margin: auto !important;
+}
+
+
+.main-div{
+    height: inherit;
+}
+
+.file-name{
+    max-width: 20%;
+    margin: 10px auto;
+    border: #eeeeee solid 1px;
+    padding: 10px;
+    text-align: center;
+    background: #fafafa;
+    color: #bdbdbd;
+}
+.file-size{
+    color: teal;
+}
