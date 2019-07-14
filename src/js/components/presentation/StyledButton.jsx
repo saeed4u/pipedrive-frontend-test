@@ -14,7 +14,7 @@ const CustomButton = styled(Button)({
 });
 
 const StyledButton = ({text, clickHandler}) => {
-    return <CustomButton onClick={clickHandler}>{text}</CustomButton>
+    return <CustomButton id="uploadButton" onClick={clickHandler}>{text}</CustomButton>
 };
 
 StyledButton.propTypes = {

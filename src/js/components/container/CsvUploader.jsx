@@ -8,7 +8,8 @@ import CardActions from "@material-ui/core/CardActions";
 import StyledButton from "../presentation/StyledButton";
 import filesize from "filesize";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import ApiService from "../../service/ApiService";
+import {toast} from "react-toastify";
 
 class CsvUploader extends React.Component {
 
@@ -17,12 +18,13 @@ class CsvUploader extends React.Component {
         super();
         this.state = {
             file: null,
-            uploaded: false,
             uploading: false,
-            title: "Upload"
+            title: "Upload",
+            uploadProgress: 0,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleUploadClick = this.handleUploadClick.bind(this);
+        this.api = new ApiService();
     }
 
     handleChange(event) {
@@ -34,11 +36,48 @@ class CsvUploader extends React.Component {
     handleUploadClick() {
         this.setState({
             uploading: true
-        })
+        });
+        const progressSubs = this.api.progressListener.subscribe({
+            next: (progress) => {
+                this.setState({
+                    uploadProgress: progress
+                });
+                console.log(progress);
+            }
+        });
+        const uploadSubs = this.api.uploadFile(this.state.file)
+            .subscribe({
+                next: ({data} = value) => {
+                    if (!data.error) {
+                        this.showSuccessNotification(data.message)
+                        this.props.uploadSuccess(this.state.file)
+                    } else {
+                        this.showErrorNotification(data.message)
+                    }
+                    uploadSubs.unsubscribe();
+                    progressSubs.unsubscribe()
+                },
+                error: error => {
+                    console.log(error);
+                    this.showErrorNotification('Oops, sorry that import failed. Please try again');
+                    uploadSubs.unsubscribe();
+                    progressSubs.unsubscribe()
+                }
+
+            })
+
+    }
+
+    showSuccessNotification(message) {
+        toast.success('Success', message);
+    }
+
+    showErrorNotification(message) {
+        toast.error(message);
     }
 
     render() {
-        const {title, file, uploading} = this.state;
+        const {title, file, uploading, uploadProgress} = this.state;
         return (
             <Card className="card">
                 <CardHeader title={title}/>
@@ -58,7 +97,7 @@ class CsvUploader extends React.Component {
                             {
                                 !uploading ?
                                     <StyledButton text={"Upload to server!"} clickHandler={this.handleUploadClick}/> :
-                                    <CircularProgress color="secondary"/>}
+                                    <CircularProgress color="secondary" variant="determinate" value={uploadProgress}/>}
                         </CardActions>
                         : null
                 }

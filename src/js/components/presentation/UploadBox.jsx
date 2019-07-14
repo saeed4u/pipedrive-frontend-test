@@ -60,7 +60,7 @@ const UploadBox = ({handleChange}) => {
 
     return (
         <div className="upload-box container" {...getRootProps({style})}>
-            <input type="file" className="hidden" {...getInputProps()}/>
+            <input type="file" id="uploadField" className="hidden" {...getInputProps()}/>
             <Typography color="textSecondary">
                 {isDragReject ? 'Sorry we only accept csv file types' : 'Drag CSV file here or click to upload your CSV!'}
             </Typography>

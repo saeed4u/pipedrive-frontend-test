@@ -1,24 +1,29 @@
-.container{
+.container {
     display: flex;
     align-items: center;
     justify-content: center;
     height: inherit;
 }
 
-.header-button{
+.search-container{
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.header-button {
     display: flex;
     align-items: stretch;
 }
 
-.float-right{
+.float-right {
     float: right;
 }
 
-.card{
+.card {
     width: 100% !important;
 }
 
-.upload-box{
+.upload-box {
     min-height: 100px;
     max-width: 50%;
     margin: auto;
@@ -26,25 +31,24 @@
     cursor: pointer;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
-.MuiButtonBase-root{
+.MuiButtonBase-root {
     margin: auto !important;
 }
 
-.center{
+.center {
     width: 40%;
     margin: auto !important;
 }
 
-
-.main-div{
+.main-div {
     height: inherit;
 }
 
-.file-name{
+.file-name {
     max-width: 20%;
     margin: 10px auto;
     border: #eeeeee solid 1px;
@@ -53,6 +57,19 @@
     background: #fafafa;
     color: #bdbdbd;
 }
-.file-size{
+
+.file-size {
     color: teal;
+}
+
+.app-bar {
+    color: #fff !important;
+    background-color: #3f51b5 !important;
+}
+.MuiListItem-button{
+    display: flex !important;
+    width: 100% !important;
+    align-content: flex-start !important;
+    justify-content: flex-start !important;
+    padding-left: 10px !important;
 }
