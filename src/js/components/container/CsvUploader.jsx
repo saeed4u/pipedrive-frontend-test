@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../css/csvuploader.css";
 import Card from "@material-ui/core/Card/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -56,8 +55,7 @@ class CsvUploader extends React.Component {
                     uploadSubs.unsubscribe();
                     progressSubs.unsubscribe()
                 },
-                error: error => {
-                    console.log(error);
+                error: () => {
                     showErrorNotification('Oops, sorry that import failed. Please try again');
                     uploadSubs.unsubscribe();
                     progressSubs.unsubscribe()

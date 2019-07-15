@@ -41,8 +41,7 @@ const UploadBox = ({handleChange}) => {
         isDragAccept,
         isDragReject
     } = useDropzone({
-        accept: 'text/csv', multiple: false, classname: 'dropzone', onDropAccepted: (event) => {
-            console.log(event)
+        accept: 'test/csv', multiple: false, classname: 'dropzone', onDropAccepted: (event) => {
             handleChange(event)
         }
     });

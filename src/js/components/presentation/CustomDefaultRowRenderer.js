@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 
 /**
- * This is a fork from react-virtualized
+ * This is a fork from react-virtualized. This allows setting id to be result-N for each rendered row
  * Default row renderer for Table.
  */
 export default function customDefaultRowRenderer(_ref) {
