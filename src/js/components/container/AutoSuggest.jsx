@@ -13,11 +13,9 @@ import clsx from "clsx";
 import CircularProgress from "@material-ui/core/es/CircularProgress";
 import {green} from "@material-ui/core/colors";
 import ApiService from "../../service/ApiService";
-import Table from "@material-ui/core/es/Table";
-import TableHead from "@material-ui/core/es/TableHead";
-import TableRow from "@material-ui/core/es/TableRow";
-import TableCell from "@material-ui/core/es/TableCell";
-import TableBody from "@material-ui/core/es/TableBody";
+import {VirtualizedTable} from "./VirtualizedTable";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+import {showErrorNotification, showSuccessNotification} from "../../service/NotificationService";
 
 const renderInputComponent = (inputProps) => {
     const {
@@ -29,15 +27,24 @@ const renderInputComponent = (inputProps) => {
         setLoading(true);
         setSearchResults([]);
         const api = new ApiService();
-        api.search(state.single)
+        const subs = api.search(state.single)
             .subscribe({
                 next: ({data} = response) => {
-                    console.log(data);
-                    setSearchResults(data);
-                    setLoading(false)
+                    const results = data.results;
+                    if (results && results.length) {
+                        setSearchResults(results);
+                    } else {
+                        showSuccessNotification('Sorry your query returned empty results');
+                    }
+                    setLoading(false);
+                    if (subs) {
+                        subs.unsubscribe()
+                    }
                 },
                 error: error => {
-                    console.log(error)
+                    console.log(error);
+                    showErrorNotification('Oops, sorry that query failed. Please try again');
+                    setLoading(false);
                 }
             })
     };
@@ -121,6 +128,28 @@ const getSuggestions = (suggestions, value, {showEmpty = false} = {}) => {
 
 const getSuggestionValue = (suggestion) => suggestion;
 
+const tableStyles = theme => ({
+    flexContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        boxSizing: 'border-box',
+    },
+    tableRow: {
+        cursor: 'pointer',
+    },
+    tableRowHover: {
+        '&:hover': {
+            backgroundColor: theme.palette.grey[200],
+        },
+    },
+    tableCell: {
+        flex: 1,
+    },
+    noClick: {
+        cursor: 'initial',
+    },
+});
+
 const useStyles = makeStyles(theme => ({
     root: {
         height: 250,
@@ -190,9 +219,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function createData(name, calories, fat, carbs, protein) {
-    return {name, calories, fat, carbs, protein};
-}
+const CustomTable = withStyles(tableStyles)(VirtualizedTable);
 
 const AutoSuggest = ({names}) => {
     const classes = useStyles();
@@ -232,6 +259,34 @@ const AutoSuggest = ({names}) => {
         renderSuggestion,
     };
 
+    const columns = [
+        {
+            width: 100,
+            label: 'ID',
+            dataKey: 'id',
+            numeric: true
+        },
+        {
+            width: 200,
+            label: 'Name',
+            dataKey: 'name',
+        },
+        {
+            width: 100,
+            label: 'Age',
+            dataKey: 'age',
+        },
+        {
+            width: 250,
+            label: 'Address',
+            dataKey: 'address',
+        }, {
+            width: 150,
+            label: 'Team',
+            dataKey: 'team',
+        },
+    ];
+
     return (
         <div className={classes.root}>
             <Autosuggest
@@ -261,29 +316,14 @@ const AutoSuggest = ({names}) => {
                 )}
             />
             {stateSearchResults.length ?
-                <Paper>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Id</TableCell>
-                                <TableCell >Name</TableCell>
-                                <TableCell >Age</TableCell>
-                                <TableCell >Address</TableCell>
-                                <TableCell >Team</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {stateSearchResults.map(result => (
-                                <TableRow key={result.id} id={`result-${result.id}`}>
-                                    <TableCell component="th" scope="row">{result.id}</TableCell>
-                                    <TableCell scope="row">{result.name}</TableCell>
-                                    <TableCell >{result.age}</TableCell>
-                                    <TableCell >{result.address}</TableCell>
-                                    <TableCell >{result.team}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                <Paper style={{height: 400, width: '100%'}}>
+                    <CustomTable
+                        rowCount={stateSearchResults.length}
+                        rowGetter={({index}) => stateSearchResults[index]}
+                        columns={columns}
+                    >
+
+                    </CustomTable>
                 </Paper> : null}
         </div>
     );

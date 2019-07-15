@@ -9,7 +9,7 @@ import StyledButton from "../presentation/StyledButton";
 import filesize from "filesize";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ApiService from "../../service/ApiService";
-import {toast} from "react-toastify";
+import {showSuccessNotification, showErrorNotification} from "../../service/NotificationService"
 
 class CsvUploader extends React.Component {
 
@@ -42,38 +42,29 @@ class CsvUploader extends React.Component {
                 this.setState({
                     uploadProgress: progress
                 });
-                console.log(progress);
             }
         });
         const uploadSubs = this.api.uploadFile(this.state.file)
             .subscribe({
                 next: ({data} = value) => {
                     if (!data.error) {
-                        this.showSuccessNotification(data.message)
+                        showSuccessNotification('File successfully imported');
                         this.props.uploadSuccess(this.state.file)
                     } else {
-                        this.showErrorNotification(data.message)
+                        showErrorNotification(data.message)
                     }
                     uploadSubs.unsubscribe();
                     progressSubs.unsubscribe()
                 },
                 error: error => {
                     console.log(error);
-                    this.showErrorNotification('Oops, sorry that import failed. Please try again');
+                    showErrorNotification('Oops, sorry that import failed. Please try again');
                     uploadSubs.unsubscribe();
                     progressSubs.unsubscribe()
                 }
 
             })
 
-    }
-
-    showSuccessNotification(message) {
-        toast.success('Success', message);
-    }
-
-    showErrorNotification(message) {
-        toast.error(message);
     }
 
     render() {
