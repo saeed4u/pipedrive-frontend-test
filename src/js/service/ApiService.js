@@ -3,10 +3,13 @@ import {BehaviorSubject, from} from "rxjs";
 
 export default class ApiService {
     constructor() {
-        this.progressListener = new BehaviorSubject(0);
         this.axios = axios.create({
             baseURL: process.env.API_BASE_URL
         });
+    }
+
+    initiateProgressListener(){
+        this.progressListener = new BehaviorSubject(0);
     }
 
     uploadFile(file) {
@@ -14,6 +17,7 @@ export default class ApiService {
         formData.append('file', file);
         return from(this.axios.post(process.env.IMPORT_ENDPOINT, formData, {
             onUploadProgress: (progressEvent) => {
+                console.log(progressEvent.loaded);
                 this.progressListener.next(Math.round((progressEvent.loaded * 100) / progressEvent.total))
             }
         }))

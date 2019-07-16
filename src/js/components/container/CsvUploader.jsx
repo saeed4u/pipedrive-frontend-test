@@ -36,6 +36,7 @@ class CsvUploader extends React.Component {
         this.setState({
             uploading: true
         });
+        this.api.initiateProgressListener();
         const progressSubs = this.api.progressListener.subscribe({
             next: (progress) => {
                 this.setState({
